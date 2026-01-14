@@ -3,7 +3,6 @@ echo "Running linting..."
 pnpm format:check
 pnpm lint
 
-# Uncomment if you want to run tests as well
 # If linting passes, run tests
-# echo "Running tests..."
-# pnpm test
+echo "Running tests..."
+pnpm test

@@ -1,10 +1,10 @@
 # TypeScript Microservice Template
 
-A production-ready TypeScript microservice template with Express, Prometheus metrics, health checks, and Sentry error tracking.
+A production-ready TypeScript microservice template with Hono, Prometheus metrics, health checks, and Sentry error tracking.
 
 ## Features
 
-- **Express server** - HTTP server with health-check and metrics endpoints
+- **Hono server** - Lightweight HTTP server with health-check and metrics endpoints
 - **Prometheus metrics** - Production monitoring with prom-client
 - **Sentry integration** - Error tracking (optional, enabled via `SENTRY_DSN`)
 - **Structured logging** - JSONL format for infrastructure compatibility
@@ -20,11 +20,11 @@ A production-ready TypeScript microservice template with Express, Prometheus met
 # Install dependencies
 pnpm install
 
-# Start PostgreSQL (required for the example service)
-docker compose up -d
-
 # Copy environment file
 cp .env.example .env
+
+# Start PostgreSQL (required for the example service)
+docker compose up -d
 
 # Start the service
 pnpm start
@@ -72,6 +72,7 @@ Replace all occurrences of the template name with your service name:
 | ---- | -------------- |
 | `package.json` | `name`, `description` |
 | `Dockerfile` | Cache ID in `--mount=type=cache,id=ts-microservice-template-pnpm` |
+| `bamboo-specs/bamboo.yaml` | `plan.key`, `plan.name`, `variables.name`, `variables.maintainer` |
 | `README.md` | Title and description |
 | `AGENTS.md` | Project description and structure if needed |
 
@@ -79,9 +80,8 @@ Replace all occurrences of the template name with your service name:
 
 The CI workflow is defined in `.github/workflows/ci.yml`. It runs:
 
-- **Lint**: ESLint and Prettier checks
-- **Test**: Unit tests with PostgreSQL service container
-- **Build**: TypeScript compilation
+- **Lint**: ESLint and Prettier checks (via Docker build)
+- **Test**: Unit tests with testcontainers (via Docker-in-Docker)
 - **Docker**: Docker image build (on master/main branch only)
 
 To enable Docker image publishing, update the workflow to push to your container
@@ -113,7 +113,7 @@ service doesn't need a database, remove the following files:
 - `src/services/users.test.ts` - Example user service tests
 - `src/test/db-setup.ts` - Database test setup with testcontainers
 - `docker-compose.yml` - PostgreSQL container configuration
-- `docker-compose.test.yml` - Docker-in-Docker (DinD) configuration for running tests locally
+- `docker-compose.test.yml` - Docker-in-Docker (DinD) configuration for running tests in CI
 
 Also update:
 
