@@ -1,6 +1,7 @@
 # TypeScript Microservice Template
 
-A production-ready TypeScript microservice template with Hono, Prometheus metrics, health checks, and Sentry error tracking.
+A production-ready TypeScript microservice template with Hono, Prometheus
+metrics, health checks, and Sentry error tracking.
 
 ## Features
 
@@ -105,15 +106,16 @@ pnpm start
 
 ### 6. Remove Example Database Files (Optional)
 
-This template includes an example PostgreSQL integration with Drizzle ORM. If your
-service doesn't need a database, remove the following files:
+This template includes an example PostgreSQL integration with Drizzle ORM. If
+your service doesn't need a database, remove the following files:
 
 - `src/db/` - Database schema, connection, and migrations
 - `src/services/users.ts` - Example user service
 - `src/services/users.test.ts` - Example user service tests
 - `src/test/db-setup.ts` - Database test setup with testcontainers
 - `docker-compose.yml` - PostgreSQL container configuration
-- `docker-compose.test.yml` - Docker-in-Docker (DinD) configuration for running tests in CI
+- `docker-compose.test.yml` - Docker-in-Docker (DinD) configuration for running
+  tests in CI
 
 Also update:
 
