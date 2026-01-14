@@ -176,23 +176,35 @@ Test results are exported to `output/app/`:
 
 ### Running Tests in CI
 
-In CI, tests run during `docker build`. The GitHub Actions workflow uses a
-Docker-in-Docker (DinD) service to provide a Docker daemon for testcontainers.
-The DinD service exposes port 2375, and the build uses `--network host` to allow
-the build container to access the DinD service at `tcp://127.0.0.1:2375`.
+In CI, both linting and testing run via `docker build` using the multi-stage
+Dockerfile:
 
-After the build completes, the workflow checks `/app/exit-code.txt` to verify
-that tests passed. If tests failed, the workflow fails and displays the test
-results.
+- **Lint job**: Uses `docker/build-push-action` with `target: linter-output`
+- **Test job**: Uses `docker build` with `--target tester-output` and a DinD
+  service
 
-Example build command used in CI:
+The test job uses a Docker-in-Docker (DinD) service to provide a Docker daemon
+for testcontainers. The DinD service exposes port 2375, and the build uses
+`--network host` to allow the build container to access the DinD service at
+`tcp://127.0.0.1:2375`.
+
+After the build completes, the workflow prints `test-results.xml` and checks
+`exit-code.txt` to verify that tests passed. If tests failed, the workflow fails.
+
+Docker layer caching uses GitHub Container Registry (GHCR) to store and retrieve
+cache layers between runs.
+
+Example build command used in CI for tests:
 
 ```bash
 docker build \
     --progress plain \
     --network host \
     --build-arg DOCKER_HOST=tcp://127.0.0.1:2375 \
+    --cache-from type=registry,ref=ghcr.io/$REPO:cache \
+    --cache-to type=registry,ref=ghcr.io/$REPO:cache,mode=max \
     --output type=local,dest=output \
+    --target tester-output \
     .
 ```
 
