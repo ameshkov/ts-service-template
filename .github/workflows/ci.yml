@@ -98,12 +98,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test]
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+        ports:
+          - 2375:2375
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
 
       - name: Build Docker image
         uses: docker/build-push-action@v6
@@ -111,5 +119,18 @@ jobs:
           context: .
           push: false
           tags: ts-microservice-template:${{ github.sha }}
+          build-args: |
+            DOCKER_HOST=tcp://localhost:2375
+          outputs: type=local,dest=output
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Check test results
+        run: |
+          EXIT_CODE=$(cat output/app/exit-code.txt)
+          echo "Test exit code: $EXIT_CODE"
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "Tests failed with exit code $EXIT_CODE"
+            cat output/app/test-results.xml || true
+            exit 1
+          fi

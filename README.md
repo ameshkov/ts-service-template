@@ -20,6 +20,9 @@ A production-ready TypeScript microservice template with Express, Prometheus met
 # Install dependencies
 pnpm install
 
+# Start PostgreSQL (required for the example service)
+docker compose up -d
+
 # Copy environment file
 cp .env.example .env
 
@@ -94,10 +97,6 @@ registry (e.g., GitHub Container Registry, Docker Hub).
 
 ```bash
 pnpm install
-
-# Start PostgreSQL (required for the example service)
-docker compose up -d
-
 pnpm lint
 pnpm format:check
 pnpm test
