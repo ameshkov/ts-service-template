@@ -99,31 +99,28 @@ jobs:
     needs: [lint, test]
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     services:
-      docker:
+      dind:
         image: docker:dind
         options: --privileged
+        env:
+          DOCKER_TLS_CERTDIR: ''
         ports:
           - 2375:2375
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: network=host
-
       - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: false
-          tags: ts-microservice-template:${{ github.sha }}
-          build-args: |
-            DOCKER_HOST=tcp://localhost:2375
-          outputs: type=local,dest=output
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        run: |
+          docker build \
+            --progress plain \
+            --network host \
+            --build-arg DOCKER_HOST=tcp://127.0.0.1:2375 \
+            --output type=local,dest=output \
+            --tag ts-microservice-template:${{ github.sha }} \
+            .
+        env:
+          DOCKER_HOST: tcp://localhost:2375
 
       - name: Check test results
         run: |

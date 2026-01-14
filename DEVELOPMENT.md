@@ -178,8 +178,8 @@ Test results are exported to `output/app/`:
 
 In CI, tests run during `docker build`. The GitHub Actions workflow uses a
 Docker-in-Docker (DinD) service to provide a Docker daemon for testcontainers.
-The DinD service exposes port 2375, and `DOCKER_HOST=tcp://localhost:2375` is
-passed as a build argument.
+The DinD service exposes port 2375, and the build uses `--network host` to allow
+the build container to access the DinD service at `tcp://127.0.0.1:2375`.
 
 After the build completes, the workflow checks `/app/exit-code.txt` to verify
 that tests passed. If tests failed, the workflow fails and displays the test
@@ -190,7 +190,8 @@ Example build command used in CI:
 ```bash
 docker build \
     --progress plain \
-    --build-arg DOCKER_HOST=tcp://localhost:2375 \
+    --network host \
+    --build-arg DOCKER_HOST=tcp://127.0.0.1:2375 \
     --output type=local,dest=output \
     .
 ```
