@@ -101,7 +101,7 @@ jobs:
     services:
       dind:
         image: docker:dind
-        options: --privileged
+        options: --privileged --health-cmd "docker info" --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           DOCKER_TLS_CERTDIR: ''
         ports:
@@ -109,6 +109,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Wait for DinD
+        run: |
+          for i in {1..30}; do
+            if docker info > /dev/null 2>&1; then
+              echo "Docker is ready"
+              exit 0
+            fi
+            echo "Waiting for Docker... ($i/30)"
+            sleep 2
+          done
+          echo "Docker failed to start"
+          exit 1
+        env:
+          DOCKER_HOST: tcp://localhost:2375
 
       - name: Build Docker image
         run: |
