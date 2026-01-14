@@ -57,14 +57,14 @@ jobs:
           docker build \
             --progress plain \
             --network host \
-            --build-arg DOCKER_HOST=tcp://127.0.0.1:2375 \
-            --cache-from type=registry,ref=ghcr.io/${{ github.repository }}:cache \
-            --cache-to type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max \
+            --build-arg DOCKER_HOST=$DOCKER_HOST \
+            --cache-from type=registry,ref=ghcr.io/${{ github.repository }}:cache,ignore-error=true \
+            --cache-to type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max,ignore-error=true \
             --output type=local,dest=output \
             --target tester-output \
             .
         env:
-          DOCKER_HOST: tcp://localhost:2375
+          DOCKER_HOST: tcp://127.0.0.1:2375
 
       - name: Print test results
         if: always()
@@ -108,10 +108,10 @@ jobs:
           docker build \
             --progress plain \
             --network host \
-            --build-arg DOCKER_HOST=tcp://127.0.0.1:2375 \
-            --cache-from type=registry,ref=ghcr.io/${{ github.repository }}:cache \
-            --cache-to type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max \
+            --build-arg DOCKER_HOST=$DOCKER_HOST \
+            --cache-from type=registry,ref=ghcr.io/${{ github.repository }}:cache,ignore-error=true \
+            --cache-to type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max,ignore-error=true \
             --tag ts-microservice-template:${{ github.sha }} \
             .
         env:
-          DOCKER_HOST: tcp://localhost:2375
+          DOCKER_HOST: tcp://127.0.0.1:2375
