@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       cache_buster:
-        description: 'See CACHE_BUSTER in Dockerfile'
+        description: 'Updates CACHE_BUSTER in Dockerfile to force cache invalidation'
         required: false
         default: '0'
   push:
