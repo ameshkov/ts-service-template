@@ -5,6 +5,8 @@ services:
     privileged: true
     environment:
       DOCKER_TLS_CERTDIR: ''
+    volumes:
+      - dind-storage:/var/lib/docker
     healthcheck:
       test: ['CMD', 'docker', 'info']
       interval: 5s
@@ -31,3 +33,6 @@ services:
         --output type=local,dest=/output
         --target tester-output
         .
+
+volumes:
+  dind-storage:
