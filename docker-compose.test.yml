@@ -29,7 +29,7 @@ services:
       docker build
         --progress plain
         --network=host
-        --build-arg DOCKER_HOST=tcp://127.0.0.1:2375
+        --build-arg DOCKER_HOST=tcp://dind:2375
         --output type=local,dest=/output
         --target tester-output
         .
