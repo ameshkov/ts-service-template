@@ -14,9 +14,7 @@ export function createApp(deps: AppDependencies) {
   const userService = new UserService(deps.db);
 
   app.onError((err, c) => {
-    if (process.env.SENTRY_DSN) {
-      Sentry.captureException(err);
-    }
+    Sentry.captureException(err);
     logger.error('Unhandled error:', err);
     return c.json({ error: 'Internal Server Error' }, 500);
   });
@@ -31,6 +29,15 @@ export function createApp(deps: AppDependencies) {
   app.get('/api/users', async (c) => {
     const users = await userService.getAllUsers();
     return c.json(users);
+  });
+
+  // A route that adds a new user
+  app.post('/api/users', async (c) => {
+    const user = await userService.createUser({
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+    });
+    return c.json(user);
   });
 
   // Add your API routes here:

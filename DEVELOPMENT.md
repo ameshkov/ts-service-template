@@ -28,7 +28,7 @@ Edit `.env` and configure as needed:
 LISTEN_ADDR=0.0.0.0
 LISTEN_PORT=9090
 DB_URL=postgresql://microservice:microservice@localhost:5432/microservice
-SENTRY_DSN=
+SENTRY_DSN=https://your-sentry-dsn
 ```
 
 ### 3. Start PostgreSQL
@@ -50,7 +50,7 @@ pnpm start
 | `LISTEN_ADDR` | No       | `0.0.0.0`   | Address for metrics/health server |
 | `LISTEN_PORT` | No       | `9090`      | Port for metrics/health server    |
 | `DB_URL`      | No       | (see below) | PostgreSQL connection URL         |
-| `SENTRY_DSN`  | No       | -           | Sentry DSN for error tracking     |
+| `SENTRY_DSN`  | Yes      | -           | Sentry DSN for error tracking     |
 
 Default `DB_URL`: `postgresql://microservice:microservice@localhost:5432/microservice`
 

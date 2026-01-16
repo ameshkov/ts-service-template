@@ -1,6 +1,12 @@
 name: CI
 
 on:
+  workflow_dispatch:
+    inputs:
+      cache_buster:
+        description: 'See CACHE_BUSTER in Dockerfile'
+        required: false
+        default: '0'
   push:
     branches: [master, main]
   pull_request:
@@ -29,6 +35,8 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            CACHE_BUSTER=${{ github.event.inputs.cache_buster }}
 
   test:
     name: Test
@@ -58,6 +66,7 @@ jobs:
             --progress plain \
             --network host \
             --build-arg DOCKER_HOST=$DOCKER_HOST \
+            --build-arg CACHE_BUSTER=${{ github.event.inputs.cache_buster }} \
             --cache-from type=registry,ref=ghcr.io/${{ github.repository }}:cache,ignore-error=true \
             --cache-to type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max,ignore-error=true \
             --output type=local,dest=output \
@@ -109,6 +118,7 @@ jobs:
             --progress plain \
             --network host \
             --build-arg DOCKER_HOST=$DOCKER_HOST \
+            --build-arg CACHE_BUSTER=${{ github.event.inputs.cache_buster }} \
             --cache-from type=registry,ref=ghcr.io/${{ github.repository }}:cache,ignore-error=true \
             --cache-to type=registry,ref=ghcr.io/${{ github.repository }}:cache,mode=max,ignore-error=true \
             --tag ts-microservice-template:${{ github.sha }} \

@@ -47,6 +47,10 @@ FROM base AS tester
 ARG DOCKER_HOST
 ENV DOCKER_HOST=${DOCKER_HOST}
 
+# If test result was cached by Docker but you need to re-run them without
+# changing the code, override this build argument.
+ARG CACHE_BUSTER=0
+
 COPY --from=deps /app/node_modules /app/node_modules
 
 COPY . /app

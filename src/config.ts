@@ -19,7 +19,7 @@ function optionalEnv(name: string, defaultValue: string): string {
 }
 
 export const config = {
-  env: optionalEnv('NODE_ENV', 'development'),
+  env: optionalEnv('NODE_ENV', 'production'),
   isDev: optionalEnv('NODE_ENV', 'development') === 'development',
 
   listenAddr: optionalEnv('LISTEN_ADDR', '0.0.0.0'),
@@ -27,5 +27,5 @@ export const config = {
 
   databaseUrl: requireEnv('DB_URL'),
 
-  sentryDsn: optionalEnv('SENTRY_DSN', ''),
+  sentryDsn: requireEnv('SENTRY_DSN'),
 } as const;

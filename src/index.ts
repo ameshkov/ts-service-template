@@ -10,15 +10,13 @@ import { createApp } from './app.js';
 
 const { Pool } = pg;
 
-// Initialize Sentry early (skip if DSN not configured)
-if (config.sentryDsn) {
-  Sentry.init({
-    dsn: config.sentryDsn,
-    release: version,
-    environment: config.env,
-  });
-  logger.info('Sentry error tracking initialized');
-}
+// Initialize Sentry
+Sentry.init({
+  dsn: config.sentryDsn,
+  release: version,
+  environment: config.env,
+});
+logger.info('Sentry error tracking initialized');
 
 // Initialize database
 const pool = new Pool({ connectionString: config.databaseUrl });
@@ -57,10 +55,8 @@ const shutdown = async (signal: string) => {
     process.exit(0);
   } catch (error) {
     logger.error('Error during shutdown:', error);
-    if (config.sentryDsn) {
-      Sentry.captureException(error);
-      await Sentry.flush(2000);
-    }
+    Sentry.captureException(error);
+    await Sentry.flush(2000);
     process.exit(1);
   }
 };
